@@ -1,6 +1,8 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { useTheme } from 'react-native-paper';
+import LoginScreen from './components/loginScreen';
+import RegistrationScreen from './components/RegistrationScreen';
 
 const MainContainer = () => {
   const theme = useTheme();
@@ -8,7 +10,8 @@ const MainContainer = () => {
   return (
     <View style={[styles.container, { backgroundColor: theme.colors.primaryContainer }]}>
       <View style={styles.centeredView}>
-        <Text>Hello, MainContainer!</Text>
+     <RegistrationScreen /> 
+     
       </View>
     </View>
   );
