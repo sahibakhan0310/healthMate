@@ -10,7 +10,7 @@ const MainContainer = () => {
   return (
     <View style={[styles.container, { backgroundColor: theme.colors.primaryContainer }]}>
       <View style={styles.centeredView}>
-     <RegistrationScreen /> 
+     <LoginScreen /> 
      
       </View>
     </View>
