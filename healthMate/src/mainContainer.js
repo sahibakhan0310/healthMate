@@ -6,6 +6,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 import EntryPage from './components/EntryPage'; // Import your EntryPage component
 import LoginScreen from './components/loginScreen';
 import RegistrationScreen from './components/RegistrationScreen'
+import Success from './components/Success';
 
 const Stack = createStackNavigator();
 
@@ -29,6 +30,11 @@ const MainContainer = () => {
           name="Registration"
           component={RegistrationScreen}
           options={{ title: 'Registration' }}
+        />
+         <Stack.Screen
+          name="Success"
+          component={Success}
+          options={{ title: 'Success' }}
         />
       </Stack.Navigator>
     </NavigationContainer>

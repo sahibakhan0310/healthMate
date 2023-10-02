@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import { TextInput, Button } from 'react-native-paper';
-import { View } from 'react-native';
+import { View ,Text,Alert} from 'react-native';
 import { Formik } from 'formik';
 import * as yup from 'yup'; // Import Yup for validation
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-
+import Success from './Success';
 
 function RegistrationScreen() {
   const initialValues = {
@@ -51,7 +51,7 @@ function RegistrationScreen() {
 
       if (response.ok) {
         // Successful login
-        Alert.alert('Signup Successful', 'You are now logged in.');
+        navigation.navigate('Success')
       } else {
         // Failed login
         Alert.alert('Login Failed', 'Invalid email or password.');
@@ -133,6 +133,15 @@ function RegistrationScreen() {
 
           {touched.confirmPassword && errors.confirmPassword && (
             <Text style={{ color: 'red' }}>{errors.confirmPassword}</Text>
+          )}
+           {touched.phone && errors.phone && (
+            <Text style={{ color: 'red' }}>{errors.phone}</Text>
+          )}
+           {touched.firstName && errors.firstName && (
+            <Text style={{ color: 'red' }}>{errors.firstName}</Text>
+          )}
+           {touched.lastName && errors.lastName && (
+            <Text style={{ color: 'red' }}>{errors.lastName}</Text>
           )}
 
           <Button mode="contained" onPress={handleSubmit}>
