@@ -3,6 +3,8 @@ import { TextInput, Button } from 'react-native-paper';
 import { View } from 'react-native';
 import { Formik } from 'formik';
 import * as yup from 'yup'; // Import Yup for validation
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+
 
 function RegistrationScreen() {
   const initialValues = {

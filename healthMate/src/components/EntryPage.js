@@ -1,24 +1,29 @@
 import React from 'react';
-import { TextInput, Button,Text } from 'react-native-paper';
-import { View,Alert } from 'react-native';
+import { Button } from 'react-native-paper';
+import { View } from 'react-native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
-function EntryPage() {
-    const handleSubmit=(e)=>{
-        if(e.target.value=="login"){
-            
-        }
+const Stack = createNativeStackNavigator();
 
-    }
+function EntryPage({ navigation }) {
   return (
-   <View>
-     <Button mode="contained" value="login" onPress={(e)=>handleSubmit(e)}>
-            Login
-          </Button>
-          <Button mode="contained" value="signup" onPress={(e)=>handleSubmit(e)}>
-            Sign Up
-          </Button>
-   </View>
-  )
+    <View>
+      <Button
+        mode="contained"
+        onPress={() => navigation.navigate('Login')}
+        // Remove the "label" prop, as it's not needed
+      >
+        Login
+      </Button>
+      <Button
+        mode="contained"
+        onPress={() => navigation.navigate('Registration')}
+        // Remove the "label" prop, as it's not needed
+      >
+        Sign Up
+      </Button>
+    </View>
+  );
 }
 
-export default EntryPage
+export default EntryPage;
