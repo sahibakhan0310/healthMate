@@ -6,7 +6,7 @@ import * as yup from 'yup'; // Import Yup for validation
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Success from './Success';
 
-function RegistrationScreen() {
+function RegistrationScreen({navigation}) {
   const initialValues = {
     firstName: '',
     lastName: '',
@@ -51,6 +51,7 @@ function RegistrationScreen() {
 
       if (response.ok) {
         // Successful login
+        console.log("here sign up")
         navigation.navigate('Success')
       } else {
         // Failed login

@@ -1,12 +1,11 @@
 import React from 'react';
-import { TextInput, Button,Text } from 'react-native-paper';
-import { View,Alert } from 'react-native';
+import { TextInput, Button, Text } from 'react-native-paper';
+import { View, Alert, StyleSheet } from 'react-native';
 import { Formik } from 'formik';
 import * as yup from 'yup'; // Import Yup for validation
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
-
-const LoginScreen = () => {
+const LoginScreen = ({navigation}) => {
   // Define the initial form values
   const initialValues = {
     email: '',
@@ -33,15 +32,16 @@ const LoginScreen = () => {
       });
 
       if (response.ok) {
-        // Successful login
-        Alert.alert('Login Successful', 'You are now logged in.');
+        // Successful login\
+        console.log("here successful")
+        navigation.navigate('FitnessDashboard')
       } else {
         // Failed login
         Alert.alert('Login Failed', 'Invalid email or password.');
       }
     } catch (error) {
-      console.error('Login error:', error);
-      Alert.alert('Login Error', 'An error occurred while logging in.');
+      console.error('Login erroroooooooo:', error);
+      Alert.alert('Login777 Error', 'An error occurred while logging in.HEREEEEEEEEEEE');
     }
   };
 
@@ -52,16 +52,16 @@ const LoginScreen = () => {
       onSubmit={handleSubmit}
     >
       {({ handleChange, handleBlur, handleSubmit, values, errors, touched }) => (
-        <View>
+        <View style={styles.container}>
           <TextInput
             label="Email"
             value={values.email}
             onChangeText={handleChange('email')}
             onBlur={handleBlur('email')}
-            style={{ margin: 15 }}
+            style={styles.input}
           />
           {touched.email && errors.email && (
-            <Text style={{ color: 'red' }}>{errors.email}</Text>
+            <Text style={styles.errorText}>{errors.email}</Text>
           )}
 
           <TextInput
@@ -70,13 +70,13 @@ const LoginScreen = () => {
             onChangeText={handleChange('password')}
             onBlur={handleBlur('password')}
             secureTextEntry={true}
-            style={{ margin: 15 }}
+            style={styles.input}
           />
           {touched.password && errors.password && (
-            <Text style={{ color: 'red' }}>{errors.password}</Text>
+            <Text style={styles.errorText}>{errors.password}</Text>
           )}
 
-          <Button mode="contained" onPress={handleSubmit}>
+          <Button mode="contained" onPress={handleSubmit} style={styles.button}>
             Login
           </Button>
         </View>
@@ -84,5 +84,24 @@ const LoginScreen = () => {
     </Formik>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    padding: 20,
+  },
+  input: {
+    marginVertical: 10,
+  },
+  errorText: {
+    color: 'red',
+    fontSize: 16,
+    marginBottom: 10,
+  },
+  button: {
+    marginTop: 20,
+  },
+});
 
 export default LoginScreen;

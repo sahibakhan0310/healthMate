@@ -2,13 +2,15 @@ import React from 'react';
 import { StyleSheet } from 'react-native';
 import { useTheme } from 'react-native-paper';
 import { NavigationContainer } from '@react-navigation/native';
-import { createStackNavigator } from '@react-navigation/stack';
-import EntryPage from './components/EntryPage'; // Import your EntryPage component
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import EntryPage from './components/EntryPage';
 import LoginScreen from './components/loginScreen';
-import RegistrationScreen from './components/RegistrationScreen'
+import RegistrationScreen from './components/RegistrationScreen';
 import Success from './components/Success';
+import UserProfileScreen from './components/UserProfile';
+import FitnessDashboard from './components/FitnessDashboard';
 
-const Stack = createStackNavigator();
+const Stack = createNativeStackNavigator();
 
 const MainContainer = () => {
   const theme = useTheme();
@@ -31,10 +33,20 @@ const MainContainer = () => {
           component={RegistrationScreen}
           options={{ title: 'Registration' }}
         />
-         <Stack.Screen
+        <Stack.Screen
           name="Success"
           component={Success}
           options={{ title: 'Success' }}
+        />
+        <Stack.Screen
+          name="UserProfile"
+          component={UserProfileScreen}
+          options={{ title: 'UserProfile' }}
+        />
+        <Stack.Screen
+          name="FitnessDashboard"
+          component={FitnessDashboard}
+          options={{ title: 'FitnessDashboard' }}
         />
       </Stack.Navigator>
     </NavigationContainer>
