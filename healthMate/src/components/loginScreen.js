@@ -1,11 +1,32 @@
-import React from 'react';
-import { TextInput, Button, Text } from 'react-native-paper';
-import { View, Alert, StyleSheet } from 'react-native';
+import {React,useEffect} from 'react';
+import { TextInput, Button, Text, useTheme } from 'react-native-paper';
+import { View, Alert, StyleSheet,ImageBackground } from 'react-native';
 import { Formik } from 'formik';
 import * as yup from 'yup'; // Import Yup for validation
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import * as Animatable from 'react-native-animatable'; 
+import * as Font from 'expo-font';// Import Animatable
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+
+const Stack = createNativeStackNavigator();
+
 
 const LoginScreen = ({navigation}) => {
+  async function loadFonts() {
+    await Font.loadAsync({
+      'SF-Pro-Display-Bold': require('../../assets/fonts/SF-Pro-Display-Bold.otf'),
+    });
+  }
+  useEffect(() => {
+    // Load fonts when the component mounts
+    loadFonts().then(() => {
+      // Start the fade-in animation when fonts are loaded
+      if (fadeAnimRef.current) {
+        fadeAnimRef.current.fadeIn(1000); // Adjust the duration as needed
+      }
+    });
+  }, []);
+  const theme = useTheme();
   // Define the initial form values
   const initialValues = {
     email: '',
@@ -46,42 +67,64 @@ const LoginScreen = ({navigation}) => {
   };
 
   return (
-    <Formik
-      initialValues={initialValues}
-      validationSchema={validationSchema}
-      onSubmit={handleSubmit}
-    >
-      {({ handleChange, handleBlur, handleSubmit, values, errors, touched }) => (
-        <View style={styles.container}>
-          <TextInput
-            label="Email"
-            value={values.email}
-            onChangeText={handleChange('email')}
-            onBlur={handleBlur('email')}
-            style={styles.input}
-          />
-          {touched.email && errors.email && (
-            <Text style={styles.errorText}>{errors.email}</Text>
-          )}
+    <><ImageBackground
+      source={require('../../assets/bg.jpg')} // Provide the path to your background image
+      style={styles.backgroundImage}><Animatable.View animation="fadeIn" duration={1000} style={styles.container}>
 
-          <TextInput
-            label="Password"
-            value={values.password}
-            onChangeText={handleChange('password')}
-            onBlur={handleBlur('password')}
-            secureTextEntry={true}
-            style={styles.input}
-          />
-          {touched.password && errors.password && (
-            <Text style={styles.errorText}>{errors.password}</Text>
-          )}
+        <Formik
+          initialValues={initialValues}
+          validationSchema={validationSchema}
+          onSubmit={handleSubmit}
+        >
+          {({ handleChange, handleBlur, handleSubmit, values, errors, touched }) => (
+            <View>
+              <TextInput
+                label="Email"
+                value={values.email}
+                onChangeText={handleChange('email')}
+                onBlur={handleBlur('email')}
+                style={styles.input}
+                theme={theme} // Use the theme for the TextInput
+                autoCapitalize="none"
+              />
+              {touched.email && errors.email && (
+                <View style={styles.errorContainer}>
+                  <Text style={styles.errorText}>
+                    <Icon name="alert-circle" size={16} color="#FF0000" /> {errors.email}
+                  </Text>
+                </View>
+              )}
 
-          <Button mode="contained" onPress={handleSubmit} style={styles.button}>
-            Login
-          </Button>
-        </View>
-      )}
-    </Formik>
+              <TextInput
+                label="Password"
+                value={values.password}
+                onChangeText={handleChange('password')}
+                onBlur={handleBlur('password')}
+                secureTextEntry={true}
+                style={styles.input}
+                theme={theme} // Use the theme for the TextInput
+                autoCapitalize="none"
+              />
+              {touched.password && errors.password && (
+                <View style={styles.errorContainer}>
+                  <Text style={styles.errorText}>
+                    <Icon name="alert-circle" size={16} color="#FF0000" /> {errors.password}
+                  </Text>
+                </View>
+              )}
+
+              <Button
+                mode="contained"
+                onPress={handleSubmit}
+                style={styles.button}
+                theme={theme} // Use the theme for the Button
+              >
+                Login
+              </Button>
+            </View>
+          )}
+        </Formik>
+      </Animatable.View></ImageBackground></>
   );
 };
 
@@ -93,14 +136,22 @@ const styles = StyleSheet.create({
   },
   input: {
     marginVertical: 10,
+    fontFamily: 'SF-Pro-Display-Bold', // Set 'SF-Pro' font for TextInput
   },
   errorText: {
     color: 'red',
     fontSize: 16,
     marginBottom: 10,
+    fontWeight:'500',
+    fontFamily: 'SF-Pro-Display-Bold',
   },
   button: {
     marginTop: 20,
+    fontFamily: 'SF-Pro-Display-Bold', // Set 'SF-Pro' font for Button
+  },
+  backgroundImage: {
+    flex: 1,
+    resizeMode: 'cover', // or 'stretch' or 'center' or other options
   },
 });
 

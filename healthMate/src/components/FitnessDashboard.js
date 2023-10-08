@@ -1,10 +1,16 @@
-import React from 'react';
+import React,{ useState, useRef } from 'react';
 import { View, Text, StyleSheet, Image } from 'react-native';
-import { useTheme, Card, Title, Paragraph, Avatar } from 'react-native-paper';
-import { CircularProgress } from 'react-native-svg-circular-progress'; // Import the circular progress component
+import { useTheme, Card, Title, Paragraph, Avatar,Appbar } from 'react-native-paper';
+import { CircularProgress } from 'react-native-svg-circular-progress'; 
+import ProfileMenu from './ProfileMenu';// Import the circular progress component
 
 function FitnessDashboard() {
   const theme = useTheme();
+  const [visible, setVisible] = useState(false);
+  const anchor = useRef(null);
+
+  const openMenu = () => setVisible(true);
+  const closeMenu = () => setVisible(false);
 
   // Static user details (replace with actual user data)
   const userDetails = {
@@ -20,6 +26,10 @@ function FitnessDashboard() {
 
   return (
     <View style={[styles.container, { backgroundColor: theme.colors.background }]}>
+      <Appbar.Header>
+      <ProfileMenu />
+        <Appbar.Content title="Fitness Dashboard" />
+      </Appbar.Header>
       <Card style={styles.card}>
         <Card.Content>
           <Avatar.Icon

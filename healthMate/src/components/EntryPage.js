@@ -1,31 +1,43 @@
 import React from 'react';
-import { Button,useTheme } from 'react-native-paper';
-import { View, StyleSheet } from 'react-native';
+import { Button, useTheme } from 'react-native-paper';
+import { View, StyleSheet, Image, Text } from 'react-native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { useNavigation } from '@react-navigation/native';
-const Stack = createNativeStackNavigator();
+import * as Animatable from 'react-native-animatable';
 
 
 
-function EntryPage() {
-  const navigation = useNavigation(); 
-  const theme = useTheme();
+
+function EntryPage({ theme }) {
+  const navigation = useNavigation();
+
   return (
-    <View style={[styles.container, { backgroundColor: theme.colors.background }]}>
-      <Button
-        mode="contained"
-        onPress={() => navigation.navigate('Login')}
-        style={styles.button}
-      >
-        Login
-      </Button>
-      <Button
-        mode="contained"
-        onPress={() => navigation.navigate('Registration')}
-        style={styles.button}
-      >
-        Sign Up
-      </Button>
+    <View style={styles.container}>
+      <Image
+        source={require('../../assets/bg.jpg')} // Provide the path to your background image
+        style={styles.backgroundImage}
+      />
+      <Animatable.View animation="slideInLeft" duration={1000} style={styles.content}>
+        <Text style={[styles.title, { fontFamily: 'SF-Pro-Display-Bold', color:"#fff" }]}>
+          HealthMate
+        </Text>
+        <Button
+          mode="contained"
+          onPress={() => navigation.navigate('Login')}
+          style={styles.button}
+          labelStyle={{ fontFamily: 'SF-Pro-Display-Bold' }}
+        >
+          Login
+        </Button>
+        <Button
+          mode="contained"
+          onPress={() => navigation.navigate('Registration')}
+          style={styles.button}
+          labelStyle={{ fontFamily: 'SF-Pro-Display-Bold' }}
+        >
+          Sign Up
+        </Button>
+      </Animatable.View>
     </View>
   );
 }
@@ -33,14 +45,28 @@ function EntryPage() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: 'white',
+  },
+  backgroundImage: {
+    flex: 1,
+    resizeMode: 'cover', // or 'stretch' as needed
+    position: 'absolute',
+    width: '100%',
+    height: '100%',
+  },
+  content: {
+    flex: 1,
     justifyContent: 'center',
-    alignItems: 'center',
-    padding: 16,
-    backgroundColor: '#fff', // Change the background color as needed
+    alignItems: 'flex-start', // Align content to the left
+    paddingLeft: 20, // Adjust as needed for margin from the left edge
+  },
+  title: {
+    fontSize: 36,
+    color: 'black',
   },
   button: {
     marginVertical: 10,
-    width: '40%', // Make the buttons span the full width
+    width: '80%', // Adjust button width as needed
   },
 });
 
