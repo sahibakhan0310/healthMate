@@ -1,17 +1,21 @@
-import {React,useEffect} from 'react';
+import { React, useEffect, useState } from 'react';
 import { TextInput, Button, Text, useTheme } from 'react-native-paper';
-import { View, Alert, StyleSheet,ImageBackground } from 'react-native';
+import { View, Alert, StyleSheet, ImageBackground } from 'react-native';
 import { Formik } from 'formik';
 import * as yup from 'yup'; // Import Yup for validation
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import * as Animatable from 'react-native-animatable'; 
-import * as Font from 'expo-font';// Import Animatable
+import * as Animatable from 'react-native-animatable';
+import * as Font from 'expo-font'; // Import Animatable
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import { useDispatch } from 'react-redux';
+import { addUserDetails } from '../actions/userActions';
 
 const Stack = createNativeStackNavigator();
 
-
-const LoginScreen = ({navigation}) => {
+const LoginScreen = ({ navigation }) => {
+  const bcrypt = require('bcryptjs');
+  const [userDetails, setUserDetails] = useState({});
+  const dispatch = useDispatch();
   async function loadFonts() {
     await Font.loadAsync({
       'SF-Pro-Display-Bold': require('../../assets/fonts/SF-Pro-Display-Bold.otf'),
@@ -38,31 +42,100 @@ const LoginScreen = ({navigation}) => {
     email: yup.string().email('Invalid email').required('Email is required'),
     password: yup.string().required('Password is required'),
   });
+  const getUserDetails = async (user_id) => {
+    try {
+      const response = await fetch(`http://localhost:3000/api/userdetails?user_id=${user_id}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (response.ok) {
+        // Successful
+        const data = await response.json();
+
+        // Now you can work with the data, e.g., update your app's state or UI
+        console.log("here data",data)
+        dispatch(addUserDetails(data));
+
+        setUserDetails(data);
+        navigation.navigate('FitnessDashboard');
+      } else {
+        // Failed registration
+
+        Alert.alert('Login Failed', 'An error occurred while registering.');
+      }
+    } catch (error) {
+      console.error('login error:', error);
+      Alert.alert('login Error', 'An error occurred while registering.');
+    }
+  };
+  const getUserProfileDetails = async (user_id) => {
+    try {
+      const response = await fetch(`http://localhost:3000/api/users?user_id=${user_id}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (response.ok) {
+        // Successful
+        const data = await response.json();
+
+        // Now you can work with the data, e.g., update your app's state or UI
+
+        dispatch(addUserName(data));
+
+        //setUserDetails(data);
+      } else {
+        // Failed registration
+
+        Alert.alert('Login Failed', 'An error occurred while registering.');
+      }
+    } catch (error) {
+      console.error('login error:', error);
+      Alert.alert('login Error', 'An error occurred while registering.');
+    }
+  };
 
   // Handle form submission
   const handleSubmit = async (values) => {
-    // Here, you can perform any actions with the form values (e.g., API request)
-    console.log('Form values:', values);
     try {
-      const response = await fetch('http://localhost:3000/api/login', {
+      // Send the email and password to the server
+      const requestData = {
+        email: values.email,
+        password: values.password,
+      };
+      //console.log(password)
+      fetch('http://localhost:3000/api/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(values),
-      });
+        body: JSON.stringify(requestData),
+      })
+        .then(async (response) => {
+          if (response.ok) {
+            // Successful login
+            const data = await response.json();
+            console.log("after login", data.user_id);
+            getUserDetails(data.user_id);
+            
 
-      if (response.ok) {
-        // Successful login\
-        console.log("here successful")
-        navigation.navigate('FitnessDashboard')
-      } else {
-        // Failed login
-        Alert.alert('Login Failed', 'Invalid email or password.');
-      }
+          } else {
+            // Failed login
+            Alert.alert('Login Failed', 'Invalid email or password.');
+          }
+        })
+        .catch((error) => {
+          console.error('Login error:', error);
+          Alert.alert('Login Error', 'An error occurred while logging in.');
+        });
     } catch (error) {
-      console.error('Login erroroooooooo:', error);
-      Alert.alert('Login777 Error', 'An error occurred while logging in.HEREEEEEEEEEEE');
+      console.error('Login error:', error);
+      Alert.alert('Login Error', 'An error occurred while logging in.');
     }
   };
 
@@ -142,7 +215,7 @@ const styles = StyleSheet.create({
     color: 'red',
     fontSize: 16,
     marginBottom: 10,
-    fontWeight:'500',
+    fontWeight: '500',
     fontFamily: 'SF-Pro-Display-Bold',
   },
   button: {

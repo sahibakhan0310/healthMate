@@ -1,69 +1,80 @@
-import React,{ useState, useRef } from 'react';
-import { View, Text, StyleSheet, Image } from 'react-native';
-import { useTheme, Card, Title, Paragraph, Avatar,Appbar } from 'react-native-paper';
-import { CircularProgress } from 'react-native-svg-circular-progress'; 
-import ProfileMenu from './ProfileMenu';// Import the circular progress component
+import React from 'react';
+import { View, StyleSheet } from 'react-native';
+import { useTheme, Card, Title, Paragraph, Avatar, Appbar } from 'react-native-paper';
+import { ImageBackground } from 'react-native';
 
-function FitnessDashboard() {
+import CircularProgress from './CircularProgress'; // Import your CircularProgress component
+import ProfileMenu from './ProfileMenu';
+import { connect } from 'react-redux';
+import { LineChart } from 'react-native-chart-kit'; // Import a chart library
+
+function FitnessDashboard({ user }) {
   const theme = useTheme();
-  const [visible, setVisible] = useState(false);
-  const anchor = useRef(null);
 
-  const openMenu = () => setVisible(true);
-  const closeMenu = () => setVisible(false);
-
-  // Static user details (replace with actual user data)
-  const userDetails = {
-    firstName: 'John',
-    lastName: 'Doe',
-    height: '5\'11"',
-    weight: '175 lbs',
-    stepCount: 8000, // Change the step count value
+  // Sample data for the step count graph (replace with actual data)
+  const stepCountData = {
+    labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+    datasets: [
+      {
+        data: [7500, 8000, 9000, 7500, 8500, 9500, 10000], // Replace with your weekly step count data
+      },
+    ],
   };
 
-  // Calculate the percentage of completed steps
-  const stepPercentage = (userDetails.stepCount / 10000) * 100; // Assuming the goal is 10,000 steps
+  const stepPercentage = (user?.step_count / 10000) * 100; // Assuming the goal is 10,000 steps
 
   return (
-    <View style={[styles.container, { backgroundColor: theme.colors.background }]}>
+    
+    <View style={styles.container}>
+   
       <Appbar.Header>
-      <ProfileMenu />
+        <ProfileMenu />
         <Appbar.Content title="Fitness Dashboard" />
       </Appbar.Header>
-      <Card style={styles.card}>
+      <Card style={[styles.card, { backgroundColor: 'rgba(255, 255, 255, 0.7)' }]}>
         <Card.Content>
-          <Avatar.Icon
-            size={60}
-            icon="account"
-            style={{ backgroundColor: theme.colors.primary }}
-          />
+          <Avatar.Icon size={60} icon="account" style={{ backgroundColor: theme.colors.primary }} />
           <Title style={styles.title}>
-            {userDetails.firstName} {userDetails.lastName}
+            {user.first_name} {user.last_name}
           </Title>
-          <Paragraph style={styles.userInfoLabel}>Height: {userDetails.height}</Paragraph>
-          <Paragraph style={styles.userInfoLabel}>Weight: {userDetails.weight}</Paragraph>
-          <Paragraph style={styles.userInfoLabel}>Step Count: {userDetails.stepCount}</Paragraph>
+          <Paragraph style={styles.userInfoLabel}>Height: {user?.height}</Paragraph>
+          <Paragraph style={styles.userInfoLabel}>Weight: {user?.weight}</Paragraph>
+          <Paragraph style={styles.userInfoLabel}>Step Count: {user?.step_count}</Paragraph>
           {/* Circular Progress Indicator */}
           <View style={styles.progressContainer}>
             <CircularProgress
               percentage={stepPercentage}
-              size={200} // Increased the size of the progress circle
+              size={200}
               strokeWidth={10}
-              backgroundColor="#ccc" // Background color of the progress circle
-              progressColor={theme.colors.primary} // Progress color based on the theme
-              innerText={`${stepPercentage}%`} // Display the percentage text
-              innerTextStyle={styles.progressText} // Style for the percentage text
+              backgroundColor="#ccc"
+              progressColor={theme.colors.primary}
+              innerText={`${stepPercentage}%`}
+              innerTextStyle={styles.progressText}
             />
           </View>
-          {/* Add icons or images here */}
-          {/* <View style={styles.imageContainer}>
-            <Image
-              source={require('./assets/fitness-icon.png')} // Replace with your own image
-              style={styles.image}
-            />
-          </View> */}
         </Card.Content>
       </Card>
+      {/* Step Count Graph */}
+      <Card style={[styles.graphCard, { backgroundColor: 'rgba(255, 255, 255, 0.7)' }]}>
+        <Card.Content>
+          <Title style={styles.graphTitle}>Step Count in the Last Week</Title>
+          <LineChart
+            data={stepCountData}
+            width={300}
+            height={200}
+            withHorizontalLabels={true}
+            withVerticalLabels={true}
+            withDots={true}
+            chartConfig={{
+              backgroundGradientFrom: '#fff',
+              backgroundGradientTo: '#fff',
+              color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
+              labelColor: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
+            }}
+          />
+        </Card.Content>
+      </Card>
+
     </View>
   );
 }
@@ -71,14 +82,21 @@ function FitnessDashboard() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    margin: 20,
+    margin:5 ,
   },
   card: {
     elevation: 4,
     borderRadius: 10,
     backgroundColor: '#fff',
-    padding: 20, // Added padding to the card
-    alignItems: 'center', // Center the content horizontally
+    padding: 20,
+    alignItems: 'center',
+  },
+  graphCard: {
+    elevation: 4,
+    borderRadius: 10,
+    backgroundColor: '#fff',
+    padding: 20,
+    marginTop: 20,
   },
   title: {
     fontSize: 24,
@@ -89,23 +107,33 @@ const styles = StyleSheet.create({
   userInfoLabel: {
     fontSize: 16,
     marginTop: 5,
-    textAlign: 'center', // Center the text horizontally
+    textAlign: 'center',
   },
   progressContainer: {
     alignItems: 'center',
     marginTop: 20,
   },
   progressText: {
-    fontSize: 24, // Increased the font size of the percentage text
+    fontSize: 24,
     fontWeight: 'bold',
   },
-  imageContainer: {
-    marginTop: 20,
+  graphTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    marginBottom: 10,
+    textAlign: 'center',
   },
-  image: {
-    width: 100, // Adjust the image size as needed
-    height: 100, // Adjust the image size as needed
+  backgroundImage: {
+    flex: 1,
+    width: null,
+    height: null,
   },
 });
 
-export default FitnessDashboard;
+const mapStateToProps = (state) => {
+  return {
+    user: state.user.userDetails,
+  };
+};
+
+export default connect(mapStateToProps)(FitnessDashboard);

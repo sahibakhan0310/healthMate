@@ -1,12 +1,30 @@
-import React, { useState } from 'react';
+import React, { useState,useEffect } from 'react';
 import { TextInput, Button } from 'react-native-paper';
-import { View ,Text,Alert} from 'react-native';
+import { View, Alert, StyleSheet,ImageBackground,Text } from 'react-native';
 import { Formik } from 'formik';
 import * as yup from 'yup'; // Import Yup for validation
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Success from './Success';
+import * as Animatable from 'react-native-animatable'; 
+import * as Font from 'expo-font';// Import Animatable
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 function RegistrationScreen({navigation}) {
+
+  async function loadFonts() {
+    await Font.loadAsync({
+      'SF-Pro-Display-Bold': require('../../assets/fonts/SF-Pro-Display-Bold.otf'),
+    });
+  }
+  useEffect(() => {
+    // Load fonts when the component mounts
+    loadFonts().then(() => {
+      // Start the fade-in animation when fonts are loaded
+      if (fadeAnimRef.current) {
+        fadeAnimRef.current.fadeIn(1000); // Adjust the duration as needed
+      }
+    });
+  }, []);
   const initialValues = {
     firstName: '',
     lastName: '',
@@ -37,33 +55,42 @@ function RegistrationScreen({navigation}) {
   });
 
   const handleRegister = async (values) => {
-    // Implement registration logic here
-    // For example, validate and submit the registration data
-    // You can add validation checks and registration API calls here
     try {
+      const { ...rest } = values;
+
+      // Create a new object without the password
+      const registrationData = { ...rest };
+      console.log(registrationData)
+
+      // Continue with your registration logic
       const response = await fetch('http://localhost:3000/api/signup', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(values),
+        body: JSON.stringify(registrationData),
       });
 
       if (response.ok) {
-        // Successful login
-        console.log("here sign up")
-        navigation.navigate('Success')
+        // Successful registration
+        console.log('Registration successful');
+        navigation.navigate('Success');
       } else {
-        // Failed login
-        Alert.alert('Login Failed', 'Invalid email or password.');
+        // Failed registration
+        Alert.alert('Registration Failed', 'An error occurred while registering.');
       }
     } catch (error) {
-      console.error('Login error:', error);
-      Alert.alert('Login Error', 'An error occurred while logging in.');
+      console.error('Registration error:', error);
+      Alert.alert('Registration Error', 'An error occurred while registering.');
     }
   };
+  
 
   return (
+    <><ImageBackground
+    source={require('../../assets/bg.jpg')} // Provide the path to your background image
+    style={styles.backgroundImage}>
+      <Animatable.View animation="fadeIn" duration={1000} style={styles.container}>
     <Formik
       initialValues={initialValues}
       validationSchema={validationSchema}
@@ -85,7 +112,13 @@ function RegistrationScreen({navigation}) {
             onBlur={handleBlur('firstName')}
             style={{ marginVertical: 10 }}
           />
-
+ {touched.firstName && errors.firstName && (
+                <View style={styles.errorContainer}>
+                  <Text style={styles.errorText}>
+                    <Icon name="alert-circle" size={16} color="#FF0000" /> {errors.firstName}
+                  </Text>
+                </View>
+              )}
           <TextInput
             label="Last Name"
             value={values.lastName}
@@ -93,6 +126,13 @@ function RegistrationScreen({navigation}) {
             onBlur={handleBlur('lastName')}
             style={{ marginVertical: 10 }}
           />
+           {touched.lastName && errors.lastName && (
+                <View style={styles.errorContainer}>
+                  <Text style={styles.errorText}>
+                    <Icon name="alert-circle" size={16} color="#FF0000" /> {errors.lastName}
+                  </Text>
+                </View>
+              )}
    <TextInput
             label="Phone"
             value={values.phone}
@@ -100,7 +140,13 @@ function RegistrationScreen({navigation}) {
             onBlur={handleBlur('phone')}
             style={{ marginVertical: 10 }}
           />
-
+ {touched.phone && errors.phone && (
+                <View style={styles.errorContainer}>
+                  <Text style={styles.errorText}>
+                    <Icon name="alert-circle" size={16} color="#FF0000" /> {errors.phone}
+                  </Text>
+                </View>
+              )}
           <TextInput
             label="Email"
             value={values.email}
@@ -108,7 +154,13 @@ function RegistrationScreen({navigation}) {
             onBlur={handleBlur('email')}
             style={{ marginVertical: 10 }}
           />
-
+ {touched.email && errors.email && (
+                <View style={styles.errorContainer}>
+                  <Text style={styles.errorText}>
+                    <Icon name="alert-circle" size={16} color="#FF0000" /> {errors.email}
+                  </Text>
+                </View>
+              )}
        
           <TextInput
             label="Password"
@@ -118,40 +170,68 @@ function RegistrationScreen({navigation}) {
             secureTextEntry={true}
             style={{ marginVertical: 10 }}
           />
-
+ {touched.password && errors.password && (
+                <View style={styles.errorContainer}>
+                  <Text style={styles.errorText}>
+                    <Icon name="alert-circle" size={16} color="#FF0000" /> {errors.password}
+                  </Text>
+                </View>
+              )}
           <TextInput
-            label="Confirm Password"
-            value={values.confirmPassword}
-            onChangeText={handleChange('confirmPassword')}
-            onBlur={handleBlur('confirmPassword')}
-            secureTextEntry={true}
-            style={{ marginVertical: 10 }}
-          />
+  label="Confirm Password"
+  value={values.confirmPassword}
+  onChangeText={handleChange('confirmPassword')}
+  onBlur={handleBlur('confirmPassword')}
+  secureTextEntry={true}
+  style={{ marginVertical: 10 }}
+/>
+{touched.confirmPassword && errors.confirmPassword && (
+  <View style={styles.errorContainer}>
+    <Text style={styles.errorText}>
+      <Icon name="alert-circle" size={16} color="#FF0000" /> {errors.confirmPassword}
+    </Text>
+  </View>
+)}
 
-          {touched.password && errors.password && (
-            <Text style={{ color: 'red' }}>{errors.password}</Text>
-          )}
+     
+           
+          
 
-          {touched.confirmPassword && errors.confirmPassword && (
-            <Text style={{ color: 'red' }}>{errors.confirmPassword}</Text>
-          )}
-           {touched.phone && errors.phone && (
-            <Text style={{ color: 'red' }}>{errors.phone}</Text>
-          )}
-           {touched.firstName && errors.firstName && (
-            <Text style={{ color: 'red' }}>{errors.firstName}</Text>
-          )}
-           {touched.lastName && errors.lastName && (
-            <Text style={{ color: 'red' }}>{errors.lastName}</Text>
-          )}
-
-          <Button mode="contained" onPress={handleSubmit}>
+          <Button mode="contained" onPress={handleSubmit} style={styles.button}>
             Register
           </Button>
         </View>
       )}
     </Formik>
+    </Animatable.View>
+    </ImageBackground>
+    </>
   );
 }
-
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    padding: 20,
+  },
+  input: {
+    marginVertical: 10,
+    fontFamily: 'SF-Pro-Display-Bold', // Set 'SF-Pro' font for TextInput
+  },
+  errorText: {
+    color: 'red',
+    fontSize: 16,
+    marginBottom: 10,
+    fontWeight:'500',
+    fontFamily: 'SF-Pro-Display-Bold',
+  },
+  button: {
+    marginTop: 20,
+    fontFamily: 'SF-Pro-Display-Bold', // Set 'SF-Pro' font for Button
+  },
+  backgroundImage: {
+    flex: 1,
+    resizeMode: 'cover', // or 'stretch' or 'center' or other options
+  },
+});
 export default RegistrationScreen;
