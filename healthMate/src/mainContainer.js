@@ -12,6 +12,7 @@ import FitnessDashboard from './components/FitnessDashboard';
 import * as SplashScreen from 'expo-splash-screen';
 import SplashScreenComponent from './components/SplashScreenComponent';
 import * as Font from 'expo-font';
+import SettingsScreen from './components/SettingsScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -79,6 +80,11 @@ const MainContainer = ({theme}) => {
           name="FitnessDashboard"
           component={FitnessDashboard}
           options={{ title: 'FitnessDashboard' }}
+        />
+        <Stack.Screen
+          name="SettingsScreen"
+          component={SettingsScreen}
+          options={{ title: 'SettingsScreen' }}
         />
       </Stack.Navigator>
     </NavigationContainer>

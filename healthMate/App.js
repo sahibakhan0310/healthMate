@@ -10,6 +10,7 @@ import userReducer from './src/reducers/userReducer';
 import { Pedometer } from 'expo-sensors';
 import { useDispatch } from 'react-redux';
 import { updateStepCount } from './src/actions/userActions'; // Import your action creator
+//import StepCountBackground from './src/components/stepCountBackground';
 
 const theme = {
   ...DefaultTheme,
@@ -17,6 +18,7 @@ const theme = {
 };
 
 export default function App() {
+
   const [isPedometerAvailable, setIsPedometerAvailable] = useState('checking');
   const [pastStepCount, setPastStepCount] = useState(0);
   const [currentStepCount, setCurrentStepCount] = useState(0);
@@ -52,10 +54,12 @@ export default function App() {
   console.log("pedi",isPedometerAvailable)
   console.log("pedo last",pastStepCount)
   console.log("pedo curr",currentStepCount)
+
   return (
     <Provider store={store}>
       <PaperProvider theme={theme}>
-        <MainContainer />
+        <MainContainer stepCount={currentStepCount} />
+        {/* <StepCountBackground /> */}
       </PaperProvider>
     </Provider>
   );

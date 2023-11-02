@@ -116,7 +116,7 @@ function ProfileScreen() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.label}>Edit Profile</Text>
+      {/* <Text style={styles.label}>Edit Profile</Text> */}
       <Formik initialValues={initialValues} onSubmit={handleSubmit}>
         {({
           handleChange,

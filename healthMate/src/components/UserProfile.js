@@ -1,63 +1,70 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet,TextInput } from 'react-native';
-import { Button,useTheme } from 'react-native-paper';
+import { View, Text, StyleSheet,TextInput,Alert } from 'react-native';
+import { Button,useTheme,Switch } from 'react-native-paper';
 import { Formik } from 'formik';
-import { PaperProvider, MD3LightTheme as DefaultTheme, } from 'react-native-paper';
+import { connect } from 'react-redux';
+import Toast from 'react-native-toast-message'; 
+import { useNavigation } from '@react-navigation/native';
+
 //import WheelPicker from 'react-native-wheel-picker';
 
 ///*** implement get api to retrieve user id from users tables and send it in form */
 
-function ProfileScreen() {
+function ProfileScreen({ user }) {
   const [userID,setUserID]=useState();
+  const navigation = useNavigation();
   const theme = useTheme();
+  const [initialWaterReminder, setInitialWaterReminder] = useState(user?.water_reminder === 1);
+  console.log(user)
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     try {
+  //       const response = await fetch('http://localhost:3000/api/users', {
+  //         method: 'GET',
+  //         headers: {
+  //           'Content-Type': 'application/json',
+  //         },
+  //       });
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await fetch('http://localhost:3000/api/users', {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        });
+  //       if (response.ok) {
+  //         // Successful API response
+  //         const data = await response.json();
 
-        if (response.ok) {
-          // Successful API response
-          const data = await response.json();
+  //         if (data && data.userID) {
+  //           // Set the userID in your component state
+  //           setUserID(data.userID);
+  //         } else {
+  //           // Handle the case where userID is not present in the API response
+  //           Alert.alert('UserID not found');
+  //         }
+  //       } else {
+  //         // Handle the case where the API request failed
+  //         Alert.alert('Cannot retrieve userID');
+  //       }
+  //     } catch (error) {
+  //       console.error('Cannot retrieve userID:', error);
+  //       Alert.alert('Cannot retrieve userID');
+  //     }
+  //   };
 
-          if (data && data.userID) {
-            // Set the userID in your component state
-            setUserID(data.userID);
-          } else {
-            // Handle the case where userID is not present in the API response
-            Alert.alert('UserID not found');
-          }
-        } else {
-          // Handle the case where the API request failed
-          Alert.alert('Cannot retrieve userID');
-        }
-      } catch (error) {
-        console.error('Cannot retrieve userID:', error);
-        Alert.alert('Cannot retrieve userID');
-      }
-    };
-
-    // Call the fetchData function when the component mounts
-    fetchData();
-  }, []);
+  //   // Call the fetchData function when the component mounts
+  //   fetchData();
+  // }, []);
   const initialValues = {
-    user_id:userID,
-    firstName: 'John',
-    lastName: 'Doe',
+    user_id:user?.user_id,
+    firstName: user.first_name,
+    lastName: user.last_name,
     email: 'johndoe@example.com',
     phone: '123-456-7890',
-    height: '5.3',
-    weight: '170',
-    step: '10000',
-    waterReminder: false,
+    height: user?.height,
+    weight: user?.weight,
+    step: user?.step_count,
+    waterReminder: initialWaterReminder,
     waterInterval: '1',
   };
-
+  const isInteger = (value) => {
+    return /^[0-9]+$/.test(value);
+  };
   const [selectedHeightIndex, setSelectedHeightIndex] = useState(3); // Default height index (5'3")
   const [selectedWeightIndex, setSelectedWeightIndex] = useState(170); // Default weight (170 lbs)
 
@@ -113,23 +120,56 @@ function ProfileScreen() {
   ];
 
   const weightValues = Array.from({ length: 250 }, (_, i) => String(i + 50)); // Weight values from 50 to 299 lbs
+  const handleRegister = async (values) => {
+    try {
+      values.weight = parseInt(values.weight); // Parse weight as an integer
+      values.step = parseInt(values.step); // Parse step as an integer
+      values.waterReminder = values.waterReminder ? 1 : 0;
+  
+      const { ...rest } = values;
 
-  const handleSubmit = () => {
-    // Implement logic to save profile data
+      const profileData = { ...rest };
+      console.log(profileData);
+
+      // Continue with your registration logic
+      const response = await fetch(`http://localhost:3000/api/details?user_id=${user.user_id}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(profileData),
+      });
+
+      if (response.ok) {
+        // Successful registration
+        console.log('update successful');
+        // Show a success banner
+        Toast.show({
+          type: 'success',
+          position: 'top',
+          text1: 'Update Successful',
+          visibilityTime: 3000, // Adjust the duration as needed
+        });
+        navigation.navigate('Success');
+      } else {
+        // Failed registration
+        Alert.alert('update Failed', 'An error occurred while updating.');
+      }
+    } catch (error) {
+      console.error('Update error:', error);
+      Alert.alert('update Error', 'An error occurred while updating.');
+    }
   };
-
+  const handleSubmit = (values) => {
+    // Implement logic to save profile data
+    handleRegister(values);
+  };
+  
   return (
     <View style={styles.container}>
-      <Text style={styles.label}>Edit Profile</Text>
+      {/* <Text style={styles.label}>Edit Profile</Text> */}
       <Formik initialValues={initialValues} onSubmit={handleSubmit}>
-        {({
-          handleChange,
-          handleBlur,
-          handleSubmit,
-          values,
-          errors,
-          touched,
-        }) => (
+        {({ handleChange, handleBlur, handleSubmit, values, setFieldValue }) => (
           <>
             <Text style={styles.label}>First Name</Text>
             <Text style={styles.text}>{values.firstName}</Text>
@@ -137,43 +177,63 @@ function ProfileScreen() {
             <Text style={styles.label}>Last Name</Text>
             <Text style={styles.text}>{values.lastName}</Text>
 
-            <Text style={styles.label}>Email</Text>
+            {/* <Text style={styles.label}>Email</Text>
             <Text style={styles.text}>{values.email}</Text>
 
             <Text style={styles.label}>Phone</Text>
-            <Text style={styles.text}>{values.phone}</Text>
+            <Text style={styles.text}>{values.phone}</Text> */}
 
-            <Text style={styles.label}>Height</Text>
-            {/* <WheelPicker
-              style={styles.wheelPicker}
-              isCurved
-              data={heightValues}
-              selectedItem={selectedHeightIndex}
-              onItemSelected={(index) => setSelectedHeightIndex(index)}
-            /> */}
-            <Text style={styles.text}>{heightValues[selectedHeightIndex]}</Text>
-
-            <Text style={styles.label}>Weight</Text>
-            {/* <WheelPicker
-              style={styles.wheelPicker}
-              isCurved
-              data={weightValues}
-              selectedItem={selectedWeightIndex - 50} // Adjust for the offset
-              onItemSelected={(index) => setSelectedWeightIndex(index + 50)} // Adjust for the offset
-            /> */}
-            <Text style={styles.text}>{selectedWeightIndex} lbs</Text>
-
-            <Text style={styles.label}>Daily Step Goal</Text>
+            <Text style={styles.label}>Height (feet)</Text>
             <TextInput
-              placeholder="Daily step goal"
-              value={values.step}
-              onChangeText={handleChange('step')}
-              onBlur={handleBlur('step')}
+              placeholder="Height (feet)"
+              value={values.height}
+              onChangeText={(text) => {
+                if (isInteger(text)) {
+                  handleChange('height')(text);
+                }
+              }}
+              onBlur={handleBlur('height')}
               style={styles.input}
             />
 
+            <Text style={styles.label}>Weight (lbs)</Text>
+            <TextInput
+              placeholder="Weight (lbs)"
+              value={values.weight}
+              onChangeText={(text) => {
+                if (isInteger(text)) {
+                  handleChange('weight')(text);
+                }
+              }}
+              onBlur={handleBlur('weight')}
+              style={styles.input}
+            />
+
+<Text style={styles.label}>Daily Step Goal</Text>
+            <TextInput
+              placeholder="Daily step goal"
+              value={values.step}
+              onChangeText={(text) => {
+                if (isInteger(text)) {
+                  handleChange('step')(text);
+                }
+              }}
+              onBlur={handleBlur('step')}
+              style={styles.input}
+            />
+<Text style={styles.label}>Water Reminder</Text>
+            <View style={styles.toggleContainer}>
+              <Text>Off</Text>
+              <Switch
+                value={values.waterReminder}
+                onValueChange={(value) => setFieldValue('waterReminder', value)}
+              />
+              <Text>On</Text>
+            </View>
             {/* Add more input fields here */}
-            <Button title="Save" mode="contained" onPress={handleSubmit} />
+            <Button mode="contained" onPress={handleSubmit}>
+              Save
+            </Button>
           </>
         )}
       </Formik>
@@ -200,17 +260,10 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     paddingVertical: 5,
   },
-  wheelPicker: {
-    width: 200,
-    height: 150,
-    alignSelf: 'center',
-  },
 });
-
-export default function ProfileScreenWithTheme() {
-  return (
-    <PaperProvider>
-      <ProfileScreen />
-    </PaperProvider>
-  );
-}
+const mapStateToProps = (state) => {
+  return {
+    user: state.user.userDetails,
+  };
+};
+export default connect(mapStateToProps)(ProfileScreen);
