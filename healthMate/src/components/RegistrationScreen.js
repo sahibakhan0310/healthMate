@@ -74,7 +74,8 @@ function RegistrationScreen({navigation}) {
       if (response.ok) {
         // Successful registration
         console.log('Registration successful');
-        navigation.navigate('Success');
+        navigation.navigate('Success', { previousScreen: 'Registration' });
+
       } else {
         // Failed registration
         Alert.alert('Registration Failed', 'An error occurred while registering.');

@@ -13,6 +13,8 @@ import * as SplashScreen from 'expo-splash-screen';
 import SplashScreenComponent from './components/SplashScreenComponent';
 import * as Font from 'expo-font';
 import SettingsScreen from './components/SettingsScreen';
+import LandingScreen from './components/LandingScreen';
+import WaterIntakeScreen from './components/WaterIntakeScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -76,6 +78,11 @@ const MainContainer = ({theme}) => {
           component={UserProfileScreen}
           options={{ title: 'UserProfile' }}
         />
+         <Stack.Screen
+          name="LandingScreen"
+          component={LandingScreen}
+          options={{ title: 'LandingScreen' }}
+        />
         <Stack.Screen
           name="FitnessDashboard"
           component={FitnessDashboard}
@@ -86,6 +93,12 @@ const MainContainer = ({theme}) => {
           component={SettingsScreen}
           options={{ title: 'SettingsScreen' }}
         />
+<Stack.Screen
+          name="WaterIntakeScreen"
+          component={WaterIntakeScreen}
+          options={{ title: 'WaterIntakeScreen' }}
+        />
+    
       </Stack.Navigator>
     </NavigationContainer>
   );

@@ -51,17 +51,18 @@ function ProfileScreen({ user }) {
   //   fetchData();
   // }, []);
   const initialValues = {
-    user_id:user?.user_id,
+    user_id: user?.user_id,
     firstName: user.first_name,
     lastName: user.last_name,
     email: 'johndoe@example.com',
     phone: '123-456-7890',
-    height: user?.height,
-    weight: user?.weight,
-    step: user?.step_count,
+    height: String(user?.height),
+    weight: String(user?.weight), // Convert to string
+    step: String(user?.step_count), // Convert to string
     waterReminder: initialWaterReminder,
     waterInterval: '1',
   };
+  
   const isInteger = (value) => {
     return /^[0-9]+$/.test(value);
   };
@@ -150,7 +151,8 @@ function ProfileScreen({ user }) {
           text1: 'Update Successful',
           visibilityTime: 3000, // Adjust the duration as needed
         });
-        navigation.navigate('Success');
+        navigation.navigate('Success', { previousScreen: 'UserProfile' });
+
       } else {
         // Failed registration
         Alert.alert('update Failed', 'An error occurred while updating.');
@@ -162,6 +164,7 @@ function ProfileScreen({ user }) {
   };
   const handleSubmit = (values) => {
     // Implement logic to save profile data
+    console.log(values)
     handleRegister(values);
   };
   
@@ -196,31 +199,31 @@ function ProfileScreen({ user }) {
               style={styles.input}
             />
 
-            <Text style={styles.label}>Weight (lbs)</Text>
-            <TextInput
-              placeholder="Weight (lbs)"
-              value={values.weight}
-              onChangeText={(text) => {
-                if (isInteger(text)) {
-                  handleChange('weight')(text);
-                }
-              }}
-              onBlur={handleBlur('weight')}
-              style={styles.input}
-            />
+<Text style={styles.label}>Weight (lbs)</Text>
+<TextInput
+  placeholder="Weight (lbs)"
+  value={values.weight.toString()} // Convert to a string for display
+  onChangeText={(text) => {
+    if (isInteger(text)) {
+      handleChange('weight')(parseInt(text)); // Convert to an integer
+    }
+  }}
+  onBlur={handleBlur('weight')}
+  style={styles.input}
+/>
 
 <Text style={styles.label}>Daily Step Goal</Text>
-            <TextInput
-              placeholder="Daily step goal"
-              value={values.step}
-              onChangeText={(text) => {
-                if (isInteger(text)) {
-                  handleChange('step')(text);
-                }
-              }}
-              onBlur={handleBlur('step')}
-              style={styles.input}
-            />
+<TextInput
+  placeholder="Daily step goal"
+  value={values.step.toString()} // Convert to a string for display
+  onChangeText={(text) => {
+    if (isInteger(text)) {
+      handleChange('step')(parseInt(text)); // Convert to an integer
+    }
+  }}
+  onBlur={handleBlur('step')}
+  style={styles.input}
+/>
 <Text style={styles.label}>Water Reminder</Text>
             <View style={styles.toggleContainer}>
               <Text>Off</Text>

@@ -61,7 +61,7 @@ const LoginScreen = ({ navigation }) => {
         dispatch(addUserDetails(data));
 
         setUserDetails(data);
-        navigation.navigate('FitnessDashboard');
+        navigation.navigate('LandingScreen');
       } else {
         // Failed registration
 
