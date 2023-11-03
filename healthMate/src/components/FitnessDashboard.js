@@ -7,6 +7,7 @@ import { connect } from 'react-redux';
 import { LineChart } from 'react-native-chart-kit';
 import { useNavigation } from '@react-navigation/native';
 import SettingsScreen from './SettingsScreen';
+import { clearUserSession } from '../session';
 
 function FitnessDashboard({ user }) {
   const theme = useTheme();
@@ -22,6 +23,13 @@ function FitnessDashboard({ user }) {
 
   const handleLogout = () => {
     // Handle the logout action here
+    clearUserSession(); // Assuming you have a clearUserSession function from the previous answer
+  
+  // Reset the navigation stack to the login screen
+  navigation.reset({
+    index: 0,
+    routes: [{ name: 'Login' }], // Replace 'Login' with the name of your login screen component
+  });
     // You can clear user data and navigate to the login screen, for example.
     setIsSettingsVisible(false); // Close the menu
   };

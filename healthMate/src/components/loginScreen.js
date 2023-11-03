@@ -9,6 +9,7 @@ import * as Font from 'expo-font'; // Import Animatable
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { useDispatch } from 'react-redux';
 import { addUserDetails } from '../actions/userActions';
+import { storeUserSession } from '../session';
 
 const Stack = createNativeStackNavigator();
 
@@ -121,6 +122,7 @@ const LoginScreen = ({ navigation }) => {
             // Successful login
             const data = await response.json();
             console.log("after login", data.user_id);
+            storeUserSession(data);
             getUserDetails(data.user_id);
             
 
