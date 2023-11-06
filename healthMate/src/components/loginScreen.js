@@ -26,9 +26,9 @@ const LoginScreen = ({ navigation }) => {
     // Load fonts when the component mounts
     loadFonts().then(() => {
       // Start the fade-in animation when fonts are loaded
-      if (fadeAnimRef.current) {
-        fadeAnimRef.current.fadeIn(1000); // Adjust the duration as needed
-      }
+      // if (fadeAnimRef.current) {
+      //   fadeAnimRef.current.fadeIn(1000); // Adjust the duration as needed
+      // }
     });
   }, []);
   const theme = useTheme();

@@ -16,9 +16,9 @@ const SplashScreenComponent = () => {
     // Load fonts when the component mounts
     loadFonts().then(() => {
       // Start the fade-in animation when fonts are loaded
-      if (fadeAnimRef.current) {
-        fadeAnimRef.current.fadeIn(2000); // Adjust the duration as needed
-      }
+      // if (fadeAnimRef.current) {
+      //   fadeAnimRef.current.fadeIn(2000); // Adjust the duration as needed
+      // }
     });
   }, []);
 

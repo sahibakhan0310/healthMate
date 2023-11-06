@@ -72,6 +72,10 @@ function FitnessDashboard({ user }) {
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
+      {/* <Appbar.Header>
+        <Appbar.Content title="Fitness Dashboard" />
+        <Appbar.Action icon="cog" onPress={handleSettingsPress} /> // Add the settings button
+      </Appbar.Header> */}
       <Card style={styles.userCard}>
         <Card.Content style={styles.userCardContent}>
           <Avatar.Icon size={60} icon="account" style={styles.avatar} />

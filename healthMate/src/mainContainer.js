@@ -15,8 +15,11 @@ import * as Font from 'expo-font';
 import SettingsScreen from './components/SettingsScreen';
 import LandingScreen from './components/LandingScreen';
 import WaterIntakeScreen from './components/WaterIntakeScreen';
+import { createDrawerNavigator } from '@react-navigation/drawer';
+import CustomDrawerNavigator from './components/CustomDrawerNavigator';
 
 const Stack = createNativeStackNavigator();
+const Drawer = createDrawerNavigator();
 
 const MainContainer = ({theme}) => {
   const [isSplashVisible, setSplashVisible] = useState(true);
@@ -52,54 +55,20 @@ const MainContainer = ({theme}) => {
   }
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="EntryPage">
-        <Stack.Screen
-          name="EntryPage"
-          component={EntryPage}
-          options={{ title: 'Entry Page' }}
-        />
-        <Stack.Screen
-          name="Login"
-          component={LoginScreen}
-          options={{ title: 'Login' }}
-        />
-        <Stack.Screen
-          name="Registration"
-          component={RegistrationScreen}
-          options={{ title: 'Registration' }}
-        />
-        <Stack.Screen
-          name="Success"
-          component={Success}
-          options={{ title: 'Success' }}
-        />
-        <Stack.Screen
-          name="UserProfile"
-          component={UserProfileScreen}
-          options={{ title: 'UserProfile' }}
-        />
-         <Stack.Screen
-          name="LandingScreen"
-          component={LandingScreen}
-          options={{ title: 'LandingScreen' }}
-        />
-        <Stack.Screen
-          name="FitnessDashboard"
-          component={FitnessDashboard}
-          options={{ title: 'FitnessDashboard' }}
-        />
-        <Stack.Screen
-          name="SettingsScreen"
-          component={SettingsScreen}
-          options={{ title: 'SettingsScreen' }}
-        />
-<Stack.Screen
-          name="WaterIntakeScreen"
-          component={WaterIntakeScreen}
-          options={{ title: 'WaterIntakeScreen' }}
-        />
-    
-      </Stack.Navigator>
+       <Drawer.Navigator
+        initialRouteName="EntryPage"
+        drawerContent={(props) => <CustomDrawerNavigator {...props} />} // Use your custom drawer content
+      >
+        <Drawer.Screen name="EntryPage" component={EntryPage} />
+        <Drawer.Screen name="Login" component={LoginScreen} />
+        <Drawer.Screen name="Registration" component={RegistrationScreen} />
+        <Drawer.Screen name="Success" component={Success} />
+        <Drawer.Screen name="UserProfile" component={UserProfileScreen} />
+        <Drawer.Screen name="LandingScreen" component={LandingScreen} />
+        <Drawer.Screen name="FitnessDashboard" component={FitnessDashboard} />
+        <Drawer.Screen name="SettingsScreen" component={SettingsScreen} />
+        <Drawer.Screen name="WaterIntakeScreen" component={WaterIntakeScreen} />
+      </Drawer.Navigator>
     </NavigationContainer>
   );
 };
