@@ -7,5 +7,10 @@ export const addUserDetails= userDetails => (
 
   export const updateStepCount = (stepCount) => ({
     type: 'UPDATE_STEP_COUNT',
-    stepCount,
+    payload:stepCount,
+  });
+
+  export const isUserLoggedIn = (loggedIn) => ({
+    type: 'IS_USER_LOGGED_IN',
+    payload:loggedIn
   });

@@ -9,6 +9,7 @@ import themeColors from './themeColors.json';
 import userReducer from './src/reducers/userReducer';
 import { Pedometer } from 'expo-sensors';
 import { useDispatch } from 'react-redux';
+import * as Notifications from 'expo-notifications';
 import { updateStepCount } from './src/actions/userActions'; // Import your action creator
 //import StepCountBackground from './src/components/stepCountBackground';
 
@@ -26,6 +27,17 @@ export default function App() {
     user: userReducer, // Rename to your existing reducer key
 
   });
+  useEffect(() => {
+    // Request permissions for push notifications
+    const requestPermissions = async () => {
+      const { status } = await Notifications.requestPermissionsAsync();
+      if (status !== 'granted') {
+        console.error('Permission to receive push notifications denied.');
+      }
+    };
+
+    requestPermissions();
+  }, []);
   const store = createStore(rootReducer);
   const subscribe = async () => {
     const isAvailable = await Pedometer.isAvailableAsync();
@@ -56,9 +68,9 @@ export default function App() {
   console.log("pedo curr",currentStepCount)
 
   return (
-    <Provider store={store}>
+    <Provider store={store} accessibilityLabel="app-root">
       <PaperProvider theme={theme}>
-        <MainContainer stepCount={currentStepCount} />
+        <MainContainer stepCount={currentStepCount} accessibilityLabel="main-root"/>
         {/* <StepCountBackground /> */}
       </PaperProvider>
     </Provider>

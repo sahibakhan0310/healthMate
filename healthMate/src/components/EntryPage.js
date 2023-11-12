@@ -1,15 +1,31 @@
-import React from 'react';
+import { useEffect, React } from 'react';
 import { Button, useTheme } from 'react-native-paper';
 import { View, StyleSheet, Image, Text } from 'react-native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { useNavigation } from '@react-navigation/native';
 import * as Animatable from 'react-native-animatable';
+import * as Notifications from 'expo-notifications';
 
 
 
 
 function EntryPage({ theme }) {
   const navigation = useNavigation();
+  useEffect(() => {
+    const scheduleTestNotification = async () => {
+      await Notifications.scheduleNotificationAsync({
+        content: {
+          title: 'Test Notification',
+          body: 'This is a test notification.',
+        },
+        trigger: {
+          seconds: 20, // Schedule the notification after 5 seconds for testing
+        },
+      });
+    };
+
+    scheduleTestNotification();
+  }, []);
 
   return (
     <View style={styles.container}>

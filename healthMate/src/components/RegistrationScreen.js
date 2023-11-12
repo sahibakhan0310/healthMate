@@ -219,6 +219,14 @@ const styles = StyleSheet.create({
     marginVertical: 10,
     fontFamily: 'SF-Pro-Display-Bold', // Set 'SF-Pro' font for TextInput
   },
+  errorContainer: {
+    alignSelf: 'flex-start', // Add this property to make the background cover only the text width
+    backgroundColor: 'white',
+  paddingRight:10,
+
+    borderRadius: 5,
+
+  },
   errorText: {
     color: 'red',
     fontSize: 16,

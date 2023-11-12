@@ -1,0 +1,10 @@
+{
+  "expo": {
+    "name": "rn-appium-test",
+    "slug": "rn-appium-test",
+    "version": "1.0.0",
+    "assetBundlePatterns": [
+      "**/*"
+    ]
+  }
+}

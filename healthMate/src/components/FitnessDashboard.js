@@ -72,13 +72,9 @@ function FitnessDashboard({ user }) {
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
-      {/* <Appbar.Header>
-        <Appbar.Content title="Fitness Dashboard" />
-        <Appbar.Action icon="cog" onPress={handleSettingsPress} /> // Add the settings button
-      </Appbar.Header> */}
       <Card style={styles.userCard}>
         <Card.Content style={styles.userCardContent}>
-          <Avatar.Icon size={60} icon="account" style={styles.avatar} />
+          <Avatar.Image size={80} source={require('../../assets/running.png')} style={styles.avatar} />
           <View style={styles.userInfo}>
             <Title style={styles.userName}>
               {user.first_name} {user.last_name}
@@ -114,9 +110,9 @@ function FitnessDashboard({ user }) {
             width={screenWidth - 32} // Adjust the width as needed
             height={220}
             chartConfig={{
-              backgroundGradientFrom: 'white',
-              backgroundGradientTo: 'white',
-              color: (opacity = 1) => `rgba(255, 69, 0, ${opacity})`, // Line color
+              backgroundGradientFrom: '#F8F8F8',
+              backgroundGradientTo: '#F8F8F8',
+              color: (opacity = 1) => `rgba(74, 142, 255, ${opacity})`, // Line color
               labelColor: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
             }}
           />
@@ -159,7 +155,7 @@ const styles = StyleSheet.create({
   stepCountCard: {
     elevation: 4,
     borderRadius: 10,
-    backgroundColor: 'white',
+    backgroundColor: '#ecf0f1',
     marginBottom: 16,
   },
   stepCountVisual: {
@@ -174,12 +170,13 @@ const styles = StyleSheet.create({
   graphCard: {
     elevation: 4,
     borderRadius: 10,
-    backgroundColor: 'white',
+    backgroundColor: '#ecf0f1',
   },
   graphTitle: {
     fontSize: 20,
     fontWeight: 'bold',
     marginBottom: 10,
+    color: '#3498db',
   },
 });
 

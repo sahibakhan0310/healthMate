@@ -18,6 +18,12 @@ const userReducer = (state = INITIAL_STATE, action) => {
         ...state,
         step_count: action.stepCount,
       };
+      case 'IS_USER_LOGGED_IN':
+        console.log("userr")
+      return {
+        ...state,
+        isLoggedIn: action.payload,
+      };
     default:
       
       return state;

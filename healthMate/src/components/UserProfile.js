@@ -250,20 +250,35 @@ const styles = StyleSheet.create({
     margin: 20,
   },
   label: {
-    fontSize: 24,
+    fontSize: 18,
     fontWeight: 'bold',
-    marginBottom: 10,
+    marginBottom: 8,
+    color: '#333', // Adjust the color based on your color scheme
   },
   text: {
     fontSize: 16,
     marginBottom: 10,
+    color: '#555', // Adjust the color based on your color scheme
   },
   input: {
     marginBottom: 10,
     borderBottomWidth: 1,
-    paddingVertical: 5,
+    paddingVertical: 8,
+    fontSize: 16,
+    color: '#333', // Adjust the color based on your color scheme
+  },
+  toggleContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginBottom: 16,
+  },
+  button: {
+    marginTop: 20,
+    backgroundColor: '#4CAF50', // Adjust the color based on your color scheme
   },
 });
+
 const mapStateToProps = (state) => {
   return {
     user: state.user.userDetails,

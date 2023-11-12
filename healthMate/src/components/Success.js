@@ -38,7 +38,7 @@ const Success = ({ navigation, route }) => {
     if (previousScreen === 'SignUp') {
       navigation.replace('UserProfile');
     } else if (previousScreen === 'UserProfile') {
-      navigation.replace('FitnessDashboard');
+      navigation.replace('LandingScreen');
     } else {
       // Handle other previous screens or add a default behavior
     }
@@ -50,7 +50,7 @@ const Success = ({ navigation, route }) => {
         <AntDesign name="checkcircle" size={150} color="green" />
       </Animated.View>
       <Text style={{ marginTop: 20, fontSize: 24, fontFamily: 'SF-Pro-Display-Bold' }}>
-        Sign Up Successful!
+       Action Successful!
       </Text>
       <Button
         mode="contained"

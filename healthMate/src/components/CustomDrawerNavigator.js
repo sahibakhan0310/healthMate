@@ -7,7 +7,7 @@ const CustomDrawerContent = ({ navigation }) => {
   return (
     <DrawerContentScrollView>
       <View style={styles.drawerHeader}>
-        <Text style={styles.drawerHeaderText}>My App</Text>
+        <Text style={styles.drawerHeaderText}>HealthMate</Text>
       </View>
       <DrawerItem
         label="Home"

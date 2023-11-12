@@ -8,10 +8,11 @@ import * as Animatable from 'react-native-animatable';
 import * as Font from 'expo-font'; // Import Animatable
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { useDispatch } from 'react-redux';
-import { addUserDetails } from '../actions/userActions';
+import { addUserDetails, isUserLoggedIn } from '../actions/userActions';
 import { storeUserSession } from '../session';
 
 const Stack = createNativeStackNavigator();
+const userLoggedIn=false;
 
 const LoginScreen = ({ navigation }) => {
   const bcrypt = require('bcryptjs');
@@ -61,6 +62,7 @@ const LoginScreen = ({ navigation }) => {
         dispatch(addUserDetails(data));
 
         setUserDetails(data);
+        dispatch(isUserLoggedIn(!userLoggedIn));
         navigation.navigate('LandingScreen');
       } else {
         // Failed registration
@@ -88,6 +90,8 @@ const LoginScreen = ({ navigation }) => {
         // Now you can work with the data, e.g., update your app's state or UI
 
         dispatch(addUserName(data));
+        console.log("hereeee")
+        
 
         //setUserDetails(data);
       } else {
@@ -179,9 +183,10 @@ const LoginScreen = ({ navigation }) => {
                 style={styles.input}
                 theme={theme} // Use the theme for the TextInput
                 autoCapitalize="none"
+                accessibilityLabel="email-login"
               />
               {touched.password && errors.password && (
-                <View style={styles.errorContainer}>
+                <View style={styles.errorContainer} accessibilityLabel="password-login">
                   <Text style={styles.errorText}>
                     <Icon name="alert-circle" size={16} color="#FF0000" /> {errors.password}
                   </Text>
@@ -192,6 +197,7 @@ const LoginScreen = ({ navigation }) => {
                 mode="contained"
                 onPress={handleSubmit}
                 style={styles.button}
+                accessibilityLabel="login-button"
                 theme={theme} // Use the theme for the Button
               >
                 Login
@@ -213,12 +219,20 @@ const styles = StyleSheet.create({
     marginVertical: 10,
     fontFamily: 'SF-Pro-Display-Bold', // Set 'SF-Pro' font for TextInput
   },
+  errorContainer: {
+    alignSelf: 'flex-start', // Add this property to make the background cover only the text width
+    backgroundColor: 'white',
+    margin:10
+  },
   errorText: {
     color: 'red',
     fontSize: 16,
     marginBottom: 10,
     fontWeight: '500',
     fontFamily: 'SF-Pro-Display-Bold',
+    textAlign:'right',
+    // backgroundColor:'white',
+    paddingRight:10
   },
   button: {
     marginTop: 20,

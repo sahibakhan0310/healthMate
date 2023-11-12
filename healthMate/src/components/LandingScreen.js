@@ -16,7 +16,7 @@ const LandingScreen = () => {
   };
 
   const navigateToWorkouts = () => {
-    navigation.navigate('WorkoutScreen');
+    navigation.navigate('WorkOutScreen');
   };
 
   return (
