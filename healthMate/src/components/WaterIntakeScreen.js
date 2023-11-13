@@ -1,46 +1,27 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Image, TextInput, Alert } from 'react-native';
-import { Button } from 'react-native-paper';
+import { View, Text, StyleSheet, TouchableOpacity, Image, TextInput, Alert, ScrollView } from 'react-native';
+import { Button, ProgressBar, ActivityIndicator } from 'react-native-paper';
 import { BarChart } from 'react-native-chart-kit';
 import { connect } from 'react-redux';
-import * as Font from 'expo-font'; 
+import * as Font from 'expo-font';
 
 const WaterIntakeScreen = ({ user }) => {
   const [waterQuantity, setWaterQuantity] = useState(0);
   const [intakeLimit, setIntakeLimit] = useState(null);
   const [showSetIntake, setShowSetIntake] = useState(false);
   const [showGraph, setShowGraph] = useState(false);
-  const [currentIntake, setCurrentIntake] = useState(0); 
+  const [currentIntake, setCurrentIntake] = useState(0);
 
-  // const increaseWater = () => {
-  //   if (waterQuantity < maxWaterQuantity) {
-  //     const newWaterQuantity = waterQuantity + 250;
-  //     setWaterQuantity(newWaterQuantity);
-  //     setCurrentIntake(newWaterQuantity); // Update current intake when increasing
-  //   }
-  // };
-
-  // const decreaseWater = () => {
-  //   if (waterQuantity > 0) {
-  //     const newWaterQuantity = waterQuantity - 250;
-  //     setWaterQuantity(newWaterQuantity);
-  //     setCurrentIntake(newWaterQuantity); // Update current intake when decreasing
-  //   }
-  // };
   async function loadFonts() {
     await Font.loadAsync({
       'SF-Pro-Display-Bold': require('../../assets/fonts/SF-Pro-Display-Bold.otf'),
     });
   }
+
   useEffect(() => {
-    // Load fonts when the component mounts
-    loadFonts().then(() => {
-      // Start the fade-in animation when fonts are loaded
-      // if (fadeAnimRef.current) {
-      //   fadeAnimRef.current.fadeIn(1000); // Adjust the duration as needed
-      // }
-    });
+    loadFonts();
   }, []);
+
   const maxWaterQuantity = 4000;
 
   const increaseWater = () => {
@@ -55,11 +36,11 @@ const WaterIntakeScreen = ({ user }) => {
     }
   };
 
-  const viewGraph = () =>{
+  const viewGraph = () => {
     setShowGraph(!showGraph);
-  }
+  };
+
   const fetchWaterReminder = async () => {
-    // Replace this with your API endpoint to check if water reminder exists for the user
     const response = await fetch(`http://localhost:3000/api/water_reminder?user_id=${user.user_id}`, {
       method: 'GET',
       headers: {
@@ -69,17 +50,14 @@ const WaterIntakeScreen = ({ user }) => {
 
     if (response.ok) {
       const data = await response.json();
-      console.log(data[0])
       if (data[0].intake_target) {
-        console.log("here")
         setIntakeLimit(data[0].intake_target);
-        setCurrentIntake(data[0].current_intake)
+        setWaterQuantity(data[0].current_intake);
         setShowSetIntake(false);
       } else {
         setShowSetIntake(true);
       }
     } else {
-      // Handle error
       console.error('Error fetching water reminder:', response.status);
     }
   };
@@ -93,12 +71,11 @@ const WaterIntakeScreen = ({ user }) => {
         },
         body: JSON.stringify({ user_id: user.user_id, intake_limit: parseInt(intakeLimit) }),
       });
-  
+
       if (response.ok) {
         setShowSetIntake(false);
         Alert.alert('Water Intake Set', 'Your water intake target has been set successfully.');
       } else {
-        // Handle error
         console.error('Error setting water reminder:', response.status);
       }
     } catch (error) {
@@ -113,7 +90,7 @@ const WaterIntakeScreen = ({ user }) => {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ user_id: user.user_id, current_intake: parseInt(currentIntake) }),
+        body: JSON.stringify({ user_id: user.user_id, current_intake: parseInt(waterQuantity) }),
       });
 
       if (response.ok) {
@@ -126,11 +103,12 @@ const WaterIntakeScreen = ({ user }) => {
       console.error('Error setting current intake:', error);
     }
   };
-  
 
   useEffect(() => {
     fetchWaterReminder();
   }, []);
+
+  const progressValue = waterQuantity / intakeLimit;
 
   const weeklyIntakeData = {
     labels: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
@@ -140,9 +118,9 @@ const WaterIntakeScreen = ({ user }) => {
       },
     ],
   };
-console.log(showSetIntake)
+
   return (
-    <View style={styles.container}>
+    <ScrollView style={styles.container}>
       <Image source={require('../../assets/bottle.png')} style={styles.bottleImage} />
 
       <View style={styles.waterCounter}>
@@ -184,21 +162,17 @@ console.log(showSetIntake)
           </>
         )}
         {showGraph && (
-          <BarChart
-          data={weeklyIntakeData}
-          width={300}
-          height={200}
-          chartConfig={{
-            backgroundGradientFrom: '#ffffff',
-            backgroundGradientTo: '#ffffff',
-            color: (opacity = 1) => `rgba(0, 0, 255, ${opacity})`,
-            labelColor: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
-          }}
-        />
+          <View style={styles.progressBarContainer}>
+            <ProgressBar
+              progress={progressValue}
+              color="#3498db" // Blue color
+              style={styles.progressBar}
+            />
+            <Text style={styles.progressLabel}>{(progressValue * 100).toFixed(0)}%</Text>
+          </View>
         )}
-        
       </View>
-    </View>
+    </ScrollView>
   );
 };
 
@@ -206,7 +180,8 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 16,
-    fontFamily: 'SF-Pro-Display-Bold'
+    fontFamily: 'SF-Pro-Display-Bold',
+    backgroundColor: '#ecf0f1', // Light gray background
   },
   bottleImage: {
     width: 200,
@@ -221,7 +196,7 @@ const styles = StyleSheet.create({
     marginTop: 16,
   },
   counterButton: {
-    backgroundColor: 'lightblue',
+    backgroundColor: '#3498db', // Blue color
     padding: 16,
     borderRadius: 50,
   },
@@ -229,7 +204,7 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: 'bold',
     color: 'white',
-    fontFamily: 'SF-Pro-Display-Bold'
+    fontFamily: 'SF-Pro-Display-Bold',
   },
   quantity: {
     fontSize: 24,
@@ -246,16 +221,13 @@ const styles = StyleSheet.create({
   setIntakeLabel: {
     fontSize: 18,
     marginBottom: 8,
-    fontFamily: 'SF-Pro-Display-Bold'
+    fontFamily: 'SF-Pro-Display-Bold',
   },
   setIntakeInput: {
     width: 200,
     marginBottom: 16,
     borderBottomWidth: 1,
     paddingVertical: 8,
-  },
-  setIntakeButton: {
-    backgroundColor: 'blue',
   },
   statsContainer: {
     alignItems: 'center',
@@ -264,12 +236,33 @@ const styles = StyleSheet.create({
   statsLabel: {
     fontSize: 16,
     marginBottom: 8,
-    fontFamily: 'SF-Pro-Display-Bold'
+    fontFamily: 'SF-Pro-Display-Bold',
+  },
+  actionButton: {
+    marginTop: 16,
+    //backgroundColor: '#3498db', // Blue color
+  },
+  progressBarContainer: {
+    marginTop: 16,
+    alignItems: 'center',
+  },
+  progressBar: {
+    height: 10,
+    width: '80%', // Adjust the width as needed
+    marginTop: 8,
+    borderRadius: 5,
+  },
+  progressLabel: {
+    marginTop: 8,
+    fontSize: 16,
+    fontFamily: 'SF-Pro-Display-Bold',
   },
 });
+
 const mapStateToProps = (state) => {
   return {
     user: state.user.userDetails,
   };
 };
+
 export default connect(mapStateToProps)(WaterIntakeScreen);

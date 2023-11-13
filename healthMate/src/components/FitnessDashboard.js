@@ -59,11 +59,31 @@ function FitnessDashboard({ user }) {
     fetchStepCountData();
   }, [user.user_id]);
 
+  // const stepCountData = {
+  //   labels: stepCountDataReq?.map((item) => item.activity_date),
+  //   datasets: [
+  //     {
+  //       data: stepCountDataReq?.map((item) => item.steps_taken),
+  //     },
+  //   ],
+  // };
+
+  const formatDate = (timestamp) => {
+    const date = new Date(timestamp);
+    const month = (date.getMonth() + 1).toString().padStart(2, '0');
+    const day = date.getDate().toString().padStart(2, '0');
+    return `${month}-${day}`;
+  };
+  console.log("stepCountDataReq",stepCountDataReq)
+  // Map and format dates
+  const formattedDates = stepCountDataReq
+    .map((item) => formatDate(item.activity_date));
+  
   const stepCountData = {
-    labels: stepCountDataReq?.map((item) => item.activity_date),
+    labels: formattedDates,
     datasets: [
       {
-        data: stepCountDataReq?.map((item) => item.steps_taken),
+        data: stepCountDataReq.map((item) => item.steps_taken),
       },
     ],
   };
@@ -90,6 +110,7 @@ function FitnessDashboard({ user }) {
       </Card>
       <Card style={styles.stepCountCard}>
         <Card.Content>
+          <Title style={styles.cardTitle}>Step Count Progress</Title>
           <View style={styles.stepCountVisual}>
             <CircularProgress
               percentage={stepPercentage}
@@ -106,16 +127,32 @@ function FitnessDashboard({ user }) {
         <Card.Content>
           <Title style={styles.graphTitle}>Step Count in the Last Week</Title>
           <LineChart
-            data={stepCountData}
-            width={screenWidth - 32} // Adjust the width as needed
-            height={220}
-            chartConfig={{
-              backgroundGradientFrom: '#F8F8F8',
-              backgroundGradientTo: '#F8F8F8',
-              color: (opacity = 1) => `rgba(74, 142, 255, ${opacity})`, // Line color
-              labelColor: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
-            }}
-          />
+  data={{
+    labels: formattedDates,
+    datasets: [
+      {
+        data: stepCountDataReq.map((item) => item.steps_taken),
+      },
+    ],
+  }}
+  width={screenWidth - 32}
+  height={220}
+  chartConfig={{
+    backgroundGradientFrom: '#F8F8F8',
+    backgroundGradientTo: '#F8F8F8',
+    color: (opacity = 1) => `rgba(74, 142, 255, ${opacity})`,
+    labelColor: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
+    style: {
+      borderRadius: 16,
+    },
+    propsForDots: {
+      r: '6',
+      strokeWidth: '2',
+      stroke: '#ffa726',
+    },
+  }}
+/>
+
         </Card.Content>
       </Card>
       
@@ -174,6 +211,12 @@ const styles = StyleSheet.create({
   },
   graphTitle: {
     fontSize: 20,
+    fontWeight: 'bold',
+    marginBottom: 10,
+    color: '#3498db',
+  },
+  cardTitle: {
+    fontSize: 24,
     fontWeight: 'bold',
     marginBottom: 10,
     color: '#3498db',
