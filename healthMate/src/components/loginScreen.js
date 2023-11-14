@@ -66,12 +66,19 @@ const LoginScreen = ({ navigation }) => {
         navigation.navigate('LandingScreen');
       } else {
         // Failed registration
-
-        Alert.alert('Login Failed', 'An error occurred while registering.');
+        if (response.status === 401) {
+          // Parse the JSON response for a 409 error
+          const errorData = await response.json();
+          Alert.alert('Login Failed', errorData.error);
+        } else {
+          // Handle other errors
+          throw new Error('Unexpected error occurred');
+        }
+       // Alert.alert('Login Failed', 'An error occurred while logging in.');
       }
     } catch (error) {
       console.error('login error:', error);
-      Alert.alert('login Error', 'An error occurred while registering.');
+      Alert.alert('login Error', 'An error occurred while logging in.');
     }
   };
   const getUserProfileDetails = async (user_id) => {

@@ -60,7 +60,6 @@ function RegistrationScreen({navigation}) {
 
       // Create a new object without the password
       const registrationData = { ...rest };
-      console.log(registrationData)
 
       // Continue with your registration logic
       const response = await fetch('http://localhost:3000/api/signup', {
@@ -70,7 +69,7 @@ function RegistrationScreen({navigation}) {
         },
         body: JSON.stringify(registrationData),
       });
-
+      
       if (response.ok) {
         // Successful registration
         console.log('Registration successful');
@@ -78,11 +77,20 @@ function RegistrationScreen({navigation}) {
 
       } else {
         // Failed registration
-        Alert.alert('Registration Failed', 'An error occurred while registering.');
+        console.log(response.statusText)
+        if (response.status === 409) {
+          // Parse the JSON response for a 409 error
+          const errorData = await response.json();
+          Alert.alert('Registration Failed', errorData.error);
+        } else {
+          // Handle other errors
+          throw new Error('Unexpected error occurred');
+        }
+        
       }
     } catch (error) {
       console.error('Registration error:', error);
-      Alert.alert('Registration Error', 'An error occurred while registering.');
+      Alert.alert('Registration Error', error);
     }
   };
   
