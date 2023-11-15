@@ -35,7 +35,7 @@ const Success = ({ navigation, route }) => {
   const navigateToNextScreen = () => {
     const previousScreen = route.params?.previousScreen;
     console.log(route)
-    if (previousScreen === 'SignUp') {
+    if (previousScreen === 'Registration') {
       navigation.replace('UserProfile');
     } else if (previousScreen === 'UserProfile') {
       navigation.replace('LandingScreen');

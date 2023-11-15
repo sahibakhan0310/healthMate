@@ -26,7 +26,7 @@ const DrawerMenu = ({ navigation, user }) => {
         </TouchableOpacity>
       </View>
       <View style={styles.menuItems}>
-        <TouchableOpacity onPress={() => navigateToScreen('EntryPage')}>
+        <TouchableOpacity onPress={() => navigateToScreen('LandingScreen')}>
           <Text style={styles.menuItem}>Home</Text>
         </TouchableOpacity>
         <TouchableOpacity onPress={() => navigateToScreen('FitnessDashboard')}>

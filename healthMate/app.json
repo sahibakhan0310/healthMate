@@ -32,6 +32,12 @@
       "eas": {
         "projectId": "cd67d60f-7ac9-40a0-a32c-5abf6659cb02"
       }
+    },
+    "notification": {
+      "icon": "./assets/notification-icon.png",
+      "color": "#000000",
+      "androidMode": "default",
+       "iosDisplayInForeground": true
     }
   }
 }
