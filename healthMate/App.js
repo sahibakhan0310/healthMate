@@ -125,6 +125,21 @@ export default function App() {
   console.log("pedi",isPedometerAvailable)
   console.log("pedo last",pastStepCount)
   console.log("pedo curr",currentStepCount)
+  useEffect(() => {
+    const notificationListener = Notifications.addNotificationReceivedListener(
+      (notification) => {
+        // Handle the received notification
+        console.log('Notification received:', notification);
+      }
+    );
+  
+    return () => {
+      if (notificationListener) {
+        notificationListener.remove();
+      }
+    };
+  }, []);
+  
 
   return (
     <Provider store={store} accessibilityLabel="app-root">

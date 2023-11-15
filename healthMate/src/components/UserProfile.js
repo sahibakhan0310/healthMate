@@ -5,6 +5,7 @@ import { Formik } from 'formik';
 import { connect } from 'react-redux';
 import Toast from 'react-native-toast-message'; 
 import { useNavigation } from '@react-navigation/native';
+import { useDispatch } from 'react-redux';
 
 //import WheelPicker from 'react-native-wheel-picker';
 
@@ -52,16 +53,18 @@ function ProfileScreen({ user }) {
   // }, []);
   const initialValues = {
     user_id: user?.user_id,
-    firstName: user.first_name,
-    lastName: user.last_name,
+    firstName: user?.first_name || '',
+    lastName: user?.last_name || '',
     email: 'johndoe@example.com',
     phone: '123-456-7890',
-    height: String(user?.height),
-    weight: String(user?.weight), // Convert to string
-    step: String(user?.step_count), // Convert to string
+    height: user?.height !== undefined ? String(user?.height) : '',
+    weight: user?.weight !== undefined ? String(user?.weight) : '',
+    step: user?.step_count !== undefined ? String(user?.step_count) : '',
     waterReminder: initialWaterReminder,
     waterInterval: '1',
   };
+  
+
   
   const isInteger = (value) => {
     return /^[0-9]+$/.test(value);
@@ -174,6 +177,7 @@ function ProfileScreen({ user }) {
       <Formik initialValues={initialValues} onSubmit={handleSubmit}>
         {({ handleChange, handleBlur, handleSubmit, values, setFieldValue }) => (
           <>
+          
             <Text style={styles.label}>First Name</Text>
             <Text style={styles.text}>{values.firstName}</Text>
 
@@ -205,7 +209,7 @@ function ProfileScreen({ user }) {
   value={values.weight.toString()} // Convert to a string for display
   onChangeText={(text) => {
     if (isInteger(text)) {
-      handleChange('weight')(parseInt(text)); // Convert to an integer
+      handleChange('weight')(text); // Convert to an integer
     }
   }}
   onBlur={handleBlur('weight')}
@@ -218,7 +222,7 @@ function ProfileScreen({ user }) {
   value={values.step.toString()} // Convert to a string for display
   onChangeText={(text) => {
     if (isInteger(text)) {
-      handleChange('step')(parseInt(text)); // Convert to an integer
+      handleChange('step')(text); // Convert to an integer
     }
   }}
   onBlur={handleBlur('step')}

@@ -8,9 +8,13 @@ import Success from './Success';
 import * as Animatable from 'react-native-animatable'; 
 import * as Font from 'expo-font';// Import Animatable
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import { useDispatch } from 'react-redux';
+import { addUserDetails, isUserLoggedIn } from '../actions/userActions';
+import { storeUserSession } from '../session';
 
 function RegistrationScreen({navigation}) {
-
+  const dispatch = useDispatch();
+  const [userDetails, setUserDetails] = useState({});
   async function loadFonts() {
     await Font.loadAsync({
       'SF-Pro-Display-Bold': require('../../assets/fonts/SF-Pro-Display-Bold.otf'),
@@ -72,6 +76,11 @@ function RegistrationScreen({navigation}) {
       
       if (response.ok) {
         // Successful registration
+        const data = await response.json();
+            console.log("after login", data.user);
+            dispatch(addUserDetails(data.user));
+            //storeUserSession(data);
+            //getUserDetails(data.user_id);
         console.log('Registration successful');
         navigation.navigate('Success', { previousScreen: 'Registration' });
 
@@ -93,7 +102,43 @@ function RegistrationScreen({navigation}) {
       Alert.alert('Registration Error', error);
     }
   };
-  
+  const getUserDetails = async (user_id) => {
+    try {
+      const response = await fetch(`http://localhost:3000/api/userdetails?user_id=${user_id}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (response.ok) {
+        // Successful
+        const data = await response.json();
+
+        // Now you can work with the data, e.g., update your app's state or UI
+        console.log("here data",data)
+        dispatch(addUserDetails(data));
+
+        setUserDetails(data);
+        dispatch(isUserLoggedIn(!userLoggedIn));
+        navigation.navigate('LandingScreen');
+      } else {
+        // Failed registration
+        if (response.status === 401) {
+          // Parse the JSON response for a 409 error
+          const errorData = await response.json();
+          Alert.alert('Login Failed', errorData.error);
+        } else {
+          // Handle other errors
+          throw new Error('Unexpected error occurred');
+        }
+       // Alert.alert('Login Failed', 'An error occurred while logging in.');
+      }
+    } catch (error) {
+      console.error('login error:', error);
+      Alert.alert('login Error', 'An error occurred while logging in.');
+    }
+  };
 
   return (
     <><ImageBackground
